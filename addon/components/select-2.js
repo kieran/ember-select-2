@@ -413,7 +413,8 @@ var Select2Component = Ember.Component.extend({
    * @param  {String|Object} data   Currently selected value
    */
   selectionChanged: function(data) {
-    var value,
+    var target,
+        value,
         multiple = this.get("multiple"),
         optionValuePath = this.get("optionValuePath");
 
@@ -431,7 +432,18 @@ var Select2Component = Ember.Component.extend({
       value = data;
     }
 
-    this.set("value", value);
+    target = this.get('value');
+    if ( target.clear && target.addObjects ) {
+      target.clear();
+      if (multiple) {
+        target.addObjects(value);
+      } else {
+        target.addObject(value);
+      }
+    } else {
+      this.set("value", value);
+    }
+
     this.sendAction('didSelect');
   },
 
